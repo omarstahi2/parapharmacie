@@ -47,7 +47,7 @@ def login(request):
     password = request.POST['password']
 
     #user = auth.authenticate(username=username, password=password)
-    user = User.objects.get(username=username)
+    user = User.objects.get(email=username)
             
     if user != None:
       # get existing cart items before login !
