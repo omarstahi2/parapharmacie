@@ -120,7 +120,6 @@ def checkout(request):
     }
     return render(request, 'store/checkout.html', context)
 
-from django.shortcuts import redirect
 
 def place_order(request):
     if request.method == 'POST':
@@ -134,6 +133,11 @@ def place_order(request):
         state = request.POST['state']
         country = request.POST['country']
         order_note = request.POST.get('order_note', '')
+
+        # Check for mandatory fields
+        if not all([first_name, last_name, email, phone_number, address_line_1, city, state, country]):
+            messages.warning(request, 'Please fill out all required fields.')
+            return redirect('checkout')
 
         details = Order_details.objects.create(
             first_name=first_name,
@@ -151,9 +155,7 @@ def place_order(request):
 
         messages.success(request, 'Order placed successfully!')
         return redirect('checkout')
-
     else:
         form = RegistrationForm()
 
     return render(request, 'store/checkout.html', {'form': form})
-
